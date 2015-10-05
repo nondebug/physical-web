@@ -126,4 +126,4 @@ task pmd(type: Pmd, dependsOn: assembleDebug) {
     }
 }
 
-check.dependsOn 'checkstyle', 'findbugs', 'lint', 'pmd'
+check.dependsOn 'checkstyle', 'findbugs', 'lint', 'pmd', 'connectedAndroidTest'

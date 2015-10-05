@@ -1,6 +1,11 @@
 language: android
 jdk: oraclejdk7
 
+env:
+  global:
+    # install timeout in minutes (2 minutes by default)
+    - ADB_INSTALL_TIMEOUT=8
+
 android:
   components:
     # The BuildTools version used by your project
@@ -12,5 +17,18 @@ android:
     # Use extra android repo locations to find the appcompat-v7:21.0.3 support library
     - extra
 
-#specify the build script to run. currently in the root directory along with .travis.yml file
-script: "./travis/build.sh"
+    # Specify system image for emulation (needed to run unit tests)
+    - sys-img-armeabi-v7a-android-21
+
+# Emulator Management: Create, Start and Wait
+before_script:
+    - echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a
+    - emulator -avd test -no-skin -no-audio -no-window &
+    - adb wait-for-device
+    - adb shell input keyevent 82 &
+
+script:
+    - echo $ADB_INSTALL_TIMEOUT
+    - android list target
+    # Specify the build script to run
+    - ./travis/build.sh
