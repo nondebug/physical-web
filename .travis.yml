@@ -24,7 +24,9 @@ android:
 before_script:
     - echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a
     - emulator -avd test -no-skin -no-audio -no-window &
-    - adb wait-for-device
+    - curl http://is.gd/android_wait_for_emulator > android-wait-for-emulator
+    - chmod u+x android-wait-for-emulator
+    - ./android-wait-for-emulator
     - adb shell input keyevent 82 &
 
 script:
@@ -32,3 +34,12 @@ script:
     - android list target
     # Specify the build script to run
     - ./travis/build.sh
+
+before_cache:
+    - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+
+cache:
+    directories:
+        - $HOME/.gradle/caches/
+        - $HOME/.gradle/wrapper/
+
